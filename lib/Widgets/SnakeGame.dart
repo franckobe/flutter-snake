@@ -39,7 +39,7 @@ class _SnakeGameState extends State<SnakeGame> {
   }
 
   void initTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       moveSnake();
     });
   }
@@ -86,7 +86,7 @@ class _SnakeGameState extends State<SnakeGame> {
     int newLast;
     switch (direction) {
       case Direction.UP : {
-        newLast = snakePoints.last + ((snakePoints.last > 15) ? -15 : 285);
+        newLast = snakePoints.last + ((snakePoints.last > 14) ? -15 : 285);
       }
       break;
       case Direction.DOWN : {
