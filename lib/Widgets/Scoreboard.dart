@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snake/tools/ValleyColors.dart';
 
 class Scoreboard extends StatefulWidget {
   const Scoreboard({Key? key, required this.score, required this.maxScore}) : super(key: key);
@@ -15,34 +16,71 @@ class _ScoreboardState extends State<Scoreboard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                color: Colors.amberAccent,
-                child: Text('Score : '),
-              ),
-              Container(
-                color: Colors.amberAccent,
-                child: Text(widget.score.toString(), textAlign: TextAlign.center,),
-              ),
-            ],
+          Container(
+            width: 100,
+            padding: EdgeInsets.symmetric(vertical: 1, horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: ValleyColors.yellow2, width: 2),
+              borderRadius: BorderRadius.all(Radius.circular(5))
+            ),
+            child: Column(
+              children: [
+                Container(
+                  child: Text(
+                    'Score',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    widget.score.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Container(
-                color: Colors.blue,
-                child: Text('Meilleur score : '),
-              ),
-              Container(
-                color: Colors.blue,
-                child: Text(widget.maxScore.toString(), textAlign: TextAlign.center,),
-              ),
-            ],
+          Container(
+            width: 100,
+            padding: EdgeInsets.symmetric(vertical: 1, horizontal: 10),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: ValleyColors.yellow2, width: 2),
+                borderRadius: BorderRadius.all(Radius.circular(5))
+            ),
+            child: Column(
+              children: [
+                Container(
+                  child: Text(
+                    'Meilleur',
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    widget.maxScore.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),

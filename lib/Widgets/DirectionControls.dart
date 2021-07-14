@@ -24,7 +24,6 @@ class DirectionControls extends StatelessWidget {
             ),
           ),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -42,7 +41,7 @@ class DirectionControls extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 45, height: 45),
+              Container(width: 46, height: 48, color: Colors.black87),
               Container(
                 color: Colors.black87,
                 child: RotatedBox(

@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:snake/Widgets/CustomButton.dart';
 import 'package:snake/Widgets/DirectionControls.dart';
 import 'package:snake/Widgets/GameGrid.dart';
 import 'package:snake/Widgets/Scoreboard.dart';
 import 'package:snake/tools/Direction.dart';
+import 'package:snake/tools/ValleyColors.dart';
 
 
 class SnakeGame extends StatefulWidget {
@@ -39,7 +43,7 @@ class _SnakeGameState extends State<SnakeGame> {
   }
 
   void initTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) {
       moveSnake();
     });
   }
@@ -127,58 +131,75 @@ class _SnakeGameState extends State<SnakeGame> {
 
   @override
   Widget build(BuildContext context) {
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+    ));
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity! > 0) {
-                changeDirection(Direction.RIGHT);
-              } else if (details.primaryVelocity! < 0) {
-                changeDirection(Direction.LEFT);
-              }
-            },
-            onVerticalDragEnd: (details) {
-              if (details.primaryVelocity! > 0) {
-                changeDirection(Direction.DOWN);
-              } else if (details.primaryVelocity! < 0) {
-                changeDirection(Direction.UP);
-              }
-            },
-            child: Container(
-              color: Colors.grey,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Scoreboard(score: score, maxScore: maxScore),
-                  Expanded(
-                      child: GameGrid(snakePoints: snakePoints, foodPosition: foodPosition)
-                  ),
-                  if (directionControls) DirectionControls(changeDirection: changeDirection),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (!started || stopped) ElevatedButton(onPressed: start, child: Text('Commencer')),
-                        if (started && !stopped) ElevatedButton(onPressed: pause, child: Text(paused ? 'Reprendre' : 'Pause')),
-                        Row(
+      home: Container(
+        decoration: BoxDecoration(
+          gradient: ValleyColors.linearGradient,
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: GestureDetector(
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity! > 0) {
+                  changeDirection(Direction.RIGHT);
+                } else if (details.primaryVelocity! < 0) {
+                  changeDirection(Direction.LEFT);
+                }
+              },
+              onVerticalDragEnd: (details) {
+                if (details.primaryVelocity! > 0) {
+                  changeDirection(Direction.DOWN);
+                } else if (details.primaryVelocity! < 0) {
+                  changeDirection(Direction.UP);
+                }
+              },
+              child: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                child: Column(
+                  children: [
+                    Scoreboard(score: score, maxScore: maxScore),
+                    SizedBox(height: 10),
+                    GameGrid(snakePoints: snakePoints, foodPosition: foodPosition, direction: direction,),
+                    SizedBox(height: 10),
+                    if (directionControls) DirectionControls(changeDirection: changeDirection),
+                    Expanded(
+                      child: Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Boutons'),
-                            Switch(value: directionControls, onChanged: (value) {
-                              setState(() {
-                                directionControls = value;
-                              });
-                            }),
+                            if (!started || stopped) CustomButton(
+                                onPressed: start,
+                                text: 'Commencer'
+                            ),
+                            if (started && !stopped) CustomButton(
+                                onPressed: pause,
+                                text: paused ? 'Reprendre' : 'Pause'
+                            ),
+                            Row(
+                              children: [
+                                Text('Boutons'),
+                                Switch(value: directionControls, activeColor: ValleyColors.purple1, onChanged: (value) {
+                                  setState(() {
+                                    directionControls = value;
+                                  });
+                                }),
+                              ],
+                            )
                           ],
-                        )
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
