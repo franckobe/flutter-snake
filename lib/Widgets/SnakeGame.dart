@@ -30,7 +30,7 @@ class _SnakeGameState extends State<SnakeGame> {
   bool directionControls = false;
 
   void initGame() {
-    List<int> initialSnakePoints = [7, 22, 37, 52, 67];
+    List<int> initialSnakePoints = [5, 20, 35, 50, 65];
     setState(() {
       snakePoints = initialSnakePoints;
       started = true;

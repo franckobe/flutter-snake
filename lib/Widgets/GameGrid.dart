@@ -23,13 +23,38 @@ class _GameGridState extends State<GameGrid> {
     return nb;
   }
 
+  Direction getNextDirection(index, currentIndex) {
+    Direction nextDirection = widget.direction;
+    if ( widget.snakePoints[currentIndex+1] == index + 15 || widget.snakePoints[currentIndex+1] == index - 285 ) {
+      nextDirection = Direction.DOWN;
+    }
+    else if ( widget.snakePoints[currentIndex+1] == index - 15 || widget.snakePoints[currentIndex+1] == index + 285 ) {
+      nextDirection = Direction.UP;
+    }
+    else if ( widget.snakePoints[currentIndex+1] == index + 1 || widget.snakePoints[currentIndex+1] == index - 14 ) {
+      nextDirection = Direction.RIGHT;
+    }
+    else if ( widget.snakePoints[currentIndex+1] == index - 1 || widget.snakePoints[currentIndex+1] == index + 14 ) {
+      nextDirection = Direction.LEFT;
+    }
+    return nextDirection;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: ValleyColors.orange1, width: 2),
         borderRadius: BorderRadius.all(Radius.circular(5)),
-        color: Colors.black87
+        color: Colors.black87,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black54,
+            blurRadius: 10,
+            spreadRadius: 5,
+            offset: Offset(0, 0)
+          )
+        ]
       ),
       child: GridView.builder(
         shrinkWrap: true,
@@ -37,37 +62,82 @@ class _GameGridState extends State<GameGrid> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 15),
         itemCount: 300,
         itemBuilder: (context, index) {
-          Color cellColor = Colors.transparent;
+
           bool isHead = false;
+          bool isTail = false;
           bool isSnake = false;
+
+          Color cellColor = Colors.transparent;
+          BoxDecoration cellDecoration = BoxDecoration(
+            border: Border.all(
+              color: cellColor,
+            )
+          );
+
           if ( widget.snakePoints.contains(index) ) {
             isSnake = true;
+            cellColor = Color(0xFFF5DC10);
             if ( index == widget.snakePoints.last ) {
-              // cellColor = Colors.amber;
               isHead = true;
+              cellDecoration = BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border.all(
+                    color: Colors.transparent,
+                  )
+              );
             }
-            else cellColor = ValleyColors.yellow2;
+            else if ( index == widget.snakePoints.first ) {
+              isTail = true;
+              // Détection de la direction du prochain point
+              int currentIndex = widget.snakePoints.indexOf(index);
+              Direction nextDirection = isHead ? widget.direction : getNextDirection(index, currentIndex);
+
+              cellDecoration = BoxDecoration(
+                  color: cellColor,
+                  border: Border.all(
+                    color: cellColor,
+                  ),
+                borderRadius: BorderRadius.only(
+                  topLeft:  Radius.circular([Direction.DOWN, Direction.RIGHT].indexOf(nextDirection) != -1 ? 7 : 0),
+                  topRight: Radius.circular([Direction.DOWN, Direction.LEFT].indexOf(nextDirection) != -1 ? 7 : 0),
+                  bottomLeft: Radius.circular([Direction.UP, Direction.RIGHT].indexOf(nextDirection) != -1 ? 7 : 0),
+                  bottomRight: Radius.circular([Direction.UP, Direction.LEFT].indexOf(nextDirection) != -1 ? 7 : 0),
+                )
+              );
+            }
+            else {
+              cellDecoration = BoxDecoration(
+                color: cellColor,
+                border: Border.all(
+                  color: cellColor,
+                  width: 0.1
+                ),
+              );
+            }
+
           }
-          //else if ( index == widget.foodPosition ) cellColor = Colors.green;
+          else if ( index == widget.foodPosition ) {
+            cellDecoration = BoxDecoration(
+                color: cellColor,
+                border: Border.all(
+                  color: cellColor,
+                ),
+                image: widget.foodPosition == index ? DecorationImage(
+                    image: AssetImage('assets/donut.png')
+                ) : null
+            );
+          }
 
           return Container(
-            padding: EdgeInsets.all(1),
-            decoration: BoxDecoration(
-              image: index == widget.foodPosition ? DecorationImage(image: AssetImage('assets/donut.png')) : null,
-              color: cellColor,
-              border: Border.all(
-                color: isSnake && !isHead ? ValleyColors.yellow2 : Colors.transparent,
-                width: 1
-              )
-            ),
+            decoration: cellDecoration,
             child: isHead ? RotatedBox(
               quarterTurns: getQuarterForDirection(),
               child: OverflowBox(
-                alignment: Alignment(-0.7, 0.7),
+                alignment: Alignment(0.5, 0.7),
                 maxHeight: 35,
                 maxWidth: 50,
                 child: Image(
-                  image: AssetImage('assets/homer.png'),
+                  image: AssetImage('assets/hand.png'),
                 ),
               ),
             ) : null,
